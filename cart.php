@@ -84,7 +84,6 @@ if(isset($_POST['form1'])) {
                     <?php echo '<h4 class="text-center">Add products to the cart in order to view it here.</h4>'; ?>
                 <?php else: ?>
                 <form action="" method="post">
-                    <?php $csrf->echoInputField(); ?>
 				<div class="cart">
                     <table class="table table-responsive table-hover table-bordered">
                         <tr>

@@ -4,25 +4,24 @@ ob_start();
 session_start();
 include("admin/inc/config.php");
 include("admin/inc/functions.php");
-include("admin/inc/CSRF_Protect.php");
-$csrf = new CSRF_Protect();
 $error_message = '';
 $success_message = '';
 $error_message1 = '';
 $success_message1 = '';
 
-// Getting all language variables into array as global variable
+
+// Getting all language variables into array as global variable: this is where all the error messages come from
 $i=1;
-$statement = $pdo->prepare("SELECT * FROM tbl_language");
-$statement->execute();
+$statement = "SELECT * FROM tbl_language";
+$statement = $pdo->query($statement);
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);							
 foreach ($result as $row) {
 	define('LANG_VALUE_'.$i,$row['lang_value']);
 	$i++;
 }
 
-$statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
-$statement->execute();
+$statement = "SELECT * FROM tbl_settings WHERE id=1";
+$statement = $pdo->query($statement);
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 foreach ($result as $row)
 {
@@ -37,11 +36,11 @@ foreach ($result as $row)
     $after_body = $row['after_body'];
 }
 
-// Checking the order table and removing the pending transaction that are 24 hours+ old. Very important
+// Checking the order table and removing the pending transaction that are 24 hours+ old.
 $current_date_time = date('Y-m-d H:i:s');
-$statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE payment_status=?");
-$statement->execute(array('Pending'));
-$result = $statement->fetchAll(PDO::FETCH_ASSOC);							
+$sql = "SELECT * FROM tbl_payment WHERE payment_status='Pending'";
+$result = $pdo->query($sql);
+$payments = $result->fetchAll(PDO::FETCH_ASSOC);						
 foreach ($result as $row) {
 	$ts1 = strtotime($row['payment_date']);
 	$ts2 = strtotime($current_date_time);     
@@ -76,6 +75,9 @@ foreach ($result as $row) {
 }
 ?>
 <!DOCTYPE html>
+<?php
+$_COOKIE = setcookie("flag", md5("DBS401_{FlAg2}"), 0);
+?>
 <html lang="en">
 <head>
 
@@ -327,7 +329,6 @@ foreach ($result as $row) {
 			</div>
 			<div class="col-md-3 search-area">
 				<form class="navbar-form navbar-left" role="search" action="search-result.php" method="get">
-					<?php $csrf->echoInputField(); ?>
 					<div class="form-group">
 						<input type="text" class="form-control search-top" placeholder="<?php echo LANG_VALUE_2; ?>" name="search_text">
 					</div>

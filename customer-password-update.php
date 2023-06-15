@@ -62,7 +62,6 @@ if (isset($_POST['form1'])) {
                         <?php echo LANG_VALUE_99; ?>
                     </h3>
                     <form action="" method="post">
-                        <?php $csrf->echoInputField(); ?>
                         <div class="row">
                             <div class="col-md-4"></div>
                             <div class="col-md-4">

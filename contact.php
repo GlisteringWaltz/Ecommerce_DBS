@@ -145,7 +145,6 @@ if(isset($_POST['form_contact']))
 
 
                             <form action="" method="post">
-                            <?php $csrf->echoInputField(); ?>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">

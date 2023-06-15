@@ -100,7 +100,6 @@ if (isset($_POST['form1'])) {
                     }
                     ?>
                     <form action="" method="post">
-                        <?php $csrf->echoInputField(); ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <h3><?php echo LANG_VALUE_86; ?></h3>

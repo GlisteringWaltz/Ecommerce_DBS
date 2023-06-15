@@ -10,18 +10,17 @@ foreach ($result as $row) {
 ?>
 <!-- login form -->
 <?php
-if(isset($_GET['form1'])) {
-    
-    if(empty($_GET['cust_email']) || empty($_GET['cust_password'])) {
+if(isset($_POST['form1'])) {
+        
+    if(empty($_POST['cust_email']) || empty($_POST['cust_password'])) {
         $error_message = LANG_VALUE_132.'<br>';
     } else {
         
-        $cust_email = $_GET['cust_email'];
-        $cust_password = $_GET['cust_password'];
-        $hash = md5($cust_password);
+        $cust_email = $_POST['cust_email'];
+        $cust_password = $_POST['cust_password'];
 
-        $statement = "SELECT * FROM tbl_customer WHERE cust_email = '$cust_email' AND cust_password = '$hash'";
-        $statement = $pdo->query($statement);
+        $statement = $pdo->prepare("SELECT * FROM tbl_customer WHERE cust_email=?");
+        $statement->execute(array($cust_email));
         $total = $statement->rowCount();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         foreach($result as $row) {
@@ -31,8 +30,9 @@ if(isset($_GET['form1'])) {
 
         if($total==0) {
             $error_message .= LANG_VALUE_133.'<br>';
-        } else { 
-             if($row_password != $hash) {
+        } else {
+            //using MD5 form
+            if( $row_password != md5($cust_password) ) {
                 $error_message .= LANG_VALUE_139.'<br>';
             } else {
                 if($cust_status == 0) {
@@ -42,7 +42,7 @@ if(isset($_GET['form1'])) {
                     header("location: ".BASE_URL."dashboard.php");
                 }
             }
-                
+            
         }
     }
 }
@@ -61,7 +61,8 @@ if(isset($_GET['form1'])) {
                 <div class="user-content">
 
                     
-                    <form action="" method="GET">                 
+                    <form action="" method="post">
+                        <?php $csrf->echoInputField(); ?>                  
                         <div class="row">
                             <div class="col-md-4"></div>
                             <div class="col-md-4">
@@ -75,7 +76,7 @@ if(isset($_GET['form1'])) {
                                 ?>
                                 <div class="form-group">
                                     <label for=""><?php echo LANG_VALUE_94; ?> *</label>
-                                    <input type="text" class="form-control" name="cust_email">
+                                    <input type="email" class="form-control" name="cust_email">
                                 </div>
                                 <div class="form-group">
                                     <label for=""><?php echo LANG_VALUE_96; ?> *</label>
