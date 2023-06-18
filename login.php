@@ -10,42 +10,40 @@ foreach ($result as $row) {
 ?>
 <!-- login form -->
 <?php
-if(isset($_GET['form1'])) {
-    
-    if(empty($_GET['cust_email']) || empty($_GET['cust_password'])) {
+if(isset($_POST['form1'])) {
+        
+    if(empty($_POST['cust_email']) || empty($_POST['cust_password'])) {
         $error_message = LANG_VALUE_132.'<br>';
     } else {
         
-        $cust_email = $_GET['cust_email'];
-        $cust_password = $_GET['cust_password'];
+        $cust_email = strip_tags($_POST['cust_email']);
+        $cust_password = strip_tags($_POST['cust_password']);
         $hash = md5($cust_password);
 
-        $statement = "SELECT * FROM tbl_customer WHERE cust_email = '$cust_email' AND cust_password = '$hash'";
-        $statement = $pdo->query($statement);
-        $total = $statement->rowCount();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $statement = "SELECT * FROM tbl_customer WHERE cust_email='$cust_email' AND cust_password='$hash'" ;
+        $result = $pdo->query($statement);
+        $total = $result->rowCount();
         foreach($result as $row) {
             $cust_status = $row['cust_status'];
             $row_password = $row['cust_password'];
         }
-
         if($total==0) {
             $error_message .= LANG_VALUE_133.'<br>';
-        } else { 
-             if($row_password != $hash) {
-                $error_message .= LANG_VALUE_139.'<br>';
-            } else {
+        }  else {   
+            if($row_password != $hash) {
+                $error_message .= LANG_VALUE_139.'<br>';  
+            }  
                 if($cust_status == 0) {
                     $error_message .= LANG_VALUE_148.'<br>';
-                } else {
+                } else { 
                     $_SESSION['customer'] = $row;
                     header("location: ".BASE_URL."dashboard.php");
                 }
             }
-                
+            
         }
     }
-}
+
 ?>
 
 <div class="page-banner" style="background-color:#444;background-image: url(assets/uploads/<?php echo $banner_login; ?>);">
@@ -61,7 +59,7 @@ if(isset($_GET['form1'])) {
                 <div class="user-content">
 
                     
-                    <form action="" method="GET">                 
+                    <form action="" method="post">              
                         <div class="row">
                             <div class="col-md-4"></div>
                             <div class="col-md-4">
