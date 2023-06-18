@@ -3,37 +3,36 @@ ob_start();
 session_start();
 include("inc/config.php");
 include("inc/functions.php");
-include("inc/CSRF_Protect.php");
-$csrf = new CSRF_Protect();
+//include("inc/CSRF_Protect.php");
+//$csrf = new CSRF_Protect();
 $error_message='';
 
-if(isset($_POST['form1'])) {
+if(isset($_GET['form1'])) {
         
-    if(empty($_POST['email']) || empty($_POST['password'])) {
+    if(empty($_GET['email']) || empty($_GET['password'])) {
         $error_message = 'Email and/or Password can not be empty<br>';
     } else {
 		
-		$email = strip_tags($_POST['email']);
-		$password = strip_tags($_POST['password']);
+		$email = $_GET['email'];
+		$password = $_GET['password'];
+		$hash = md5($password);
 
-    	$statement = $pdo->prepare("SELECT * FROM tbl_user WHERE email=? AND status=?");
-    	$statement->execute(array($email,'Active'));
-    	$total = $statement->rowCount();    
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);    
+    	$statement = "SELECT * FROM tbl_user WHERE email='$email'";
+		$statement = $pdo->query($statement);
+		$total = $statement->rowCount();
+		$result = $statement->fetchAll(PDO::FETCH_ASSOC);    
         if($total==0) {
             $error_message .= 'Email Address does not match<br>';
-        } else {       
-            foreach($result as $row) { 
+        } else { 
+			foreach($result as $row) { 
                 $row_password = $row['password'];
             }
-        
-            if( $row_password != md5($password) ) {
-                $error_message .= 'Password does not match<br>';
-            } else {       
-            
+			if ($row_password != $hash){
+				$error_message .= 'Password does not match';
+			} else {     
 				$_SESSION['user'] = $row;
                 header("location: index.php");
-            }
+			}
         }
     }
 
@@ -77,10 +76,10 @@ if(isset($_POST['form1'])) {
 	    endif;
 	    ?>
 
-		<form action="" method="post">
-			<?php $csrf->echoInputField(); ?>
+		<form action="" method="GET">
+			
 			<div class="form-group has-feedback">
-				<input class="form-control" placeholder="Email address" name="email" type="email" autocomplete="off" autofocus>
+				<input class="form-control" placeholder="Email address" name="email" type="text" autocomplete="off" autofocus>
 			</div>
 			<div class="form-group has-feedback">
 				<input class="form-control" placeholder="Password" name="password" type="password" autocomplete="off" value="">
