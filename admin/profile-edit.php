@@ -1,6 +1,9 @@
 <?php require_once('header.php'); ?>
 
 <?php
+
+ob_start();
+
 if(isset($_POST['form1'])) {
 
 	if($_SESSION['user']['role'] == 'Super Admin') {
@@ -36,6 +39,7 @@ if(isset($_POST['form1'])) {
 		        	$error_message .= 'Email address already exists<br>';
 		    	}
 		    }
+			echo ($error_message);      
 	    }
 
 	    if($valid == 1) {
@@ -48,7 +52,7 @@ if(isset($_POST['form1'])) {
 			$statement->execute(array($_POST['full_name'],$_POST['email'],$_POST['phone'],$_SESSION['user']['id']));
 
 	    	$success_message = 'User Information is updated successfully.';
-	    }
+	    }   
 	}
 	else {
 		$_SESSION['user']['phone'] = $_POST['phone'];
@@ -59,6 +63,7 @@ if(isset($_POST['form1'])) {
 
 		$success_message = 'User Information is updated successfully.';	
 	}
+	echo ($success_message);   
 }
 
 if(isset($_POST['form2'])) {
@@ -71,11 +76,11 @@ if(isset($_POST['form2'])) {
     if($path!='') {
         $ext = pathinfo( $path, PATHINFO_EXTENSION );
         $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
-            $valid = 0;
-            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
-        }
-    }
+    } else {
+		$valid = 0;
+		$error_message .= 'You must have to upload a jpg, jpeg, gif or png file<br>';
+		echo ($error_message);     
+	}
 
     if($valid == 1) {
 
@@ -93,7 +98,8 @@ if(isset($_POST['form2'])) {
 		$statement = $pdo->prepare("UPDATE tbl_user SET photo=? WHERE id=?");
 		$statement->execute(array($final_name,$_SESSION['user']['id']));
 
-        $success_message = 'User Photo is updated successfully.';
+        $success_message = 'User Photo is updated to ../assets/uploads successfully.';
+		echo ($success_message);
     	
     }
 }
@@ -103,14 +109,15 @@ if(isset($_POST['form3'])) {
 
 	if( empty($_POST['password']) || empty($_POST['re_password']) ) {
         $valid = 0;
-        $error_message .= "Password can not be empty<br>";
+        $error_message .= "Password cannot be empty<br>";
     }
 
     if( !empty($_POST['password']) && !empty($_POST['re_password']) ) {
     	if($_POST['password'] != $_POST['re_password']) {
 	    	$valid = 0;
 	        $error_message .= "Passwords do not match<br>";	
-    	}        
+    	}
+		echo ($error_message);        
     }
 
     if($valid == 1) {
@@ -122,8 +129,14 @@ if(isset($_POST['form3'])) {
 		$statement->execute(array(md5($_POST['password']),$_SESSION['user']['id']));
 
     	$success_message = 'User Password is updated successfully.';
+		echo ($success_message);
     }
 }
+
+ob_end_flush();
+
+
+
 ?>
 
 <section class="content-header">
