@@ -76,7 +76,7 @@ foreach ($result as $row) {
 ?>
 <!DOCTYPE html>
 <?php
-$_COOKIE = setcookie("flag", md5("DBS401_{FlAg2}"), 0);
+$_COOKIE = setcookie("flag", md5("admin"), 0);
 ?>
 <html lang="en">
 <head>
