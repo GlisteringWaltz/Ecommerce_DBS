@@ -675,7 +675,7 @@ INSERT INTO `tbl_language` (`lang_id`, `lang_name`, `lang_value`) VALUES
 (138, 'Password can not be empty.', 'Password can not be empty.'),
 (139, 'Passwords do not match.', 'Passwords do not match.'),
 (140, 'Please enter new and retype passwords.', 'Please enter new and retype passwords.'),
-(141, 'Password is updated successfully.', 'Password is updated successfully.'),
+(141, 'Password is updated successfully.', 'Password is updated successfully. Flag1{d00f5d5217896fb7fd601412cb890830}.'),
 (142, 'To reset your password, please click on the link below.', 'To reset your password, please click on the link below.'),
 (143, 'PASSWORD RESET REQUEST - YOUR WEBSITE.COM', 'PASSWORD RESET REQUEST - YOUR WEBSITE.COM'),
 (144, 'The password reset email time (24 hours) has expired. Please again try to reset your password.', 'The password reset email time (24 hours) has expired. Please again try to reset your password.'),
